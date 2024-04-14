@@ -556,6 +556,29 @@ class GoogleDomains(StandardService):
         return DNSService.update_ipv6(self, address)
 
 
+class Dynv6(DNSService):
+    """
+    The dynv6.com Update-AIP with a simple REST call. Uses only https
+
+    :param zone: The Zone (aka hostname)
+    :param token: The security token
+    """
+    def __init__(self, zone: str, token: str) -> None:
+        super().__init__()
+        self._zone = zone
+        self._token = token
+    
+    def update_ipv4(self, address):
+        print(f"Updating address to {address}")
+        url = f"https://dynv6.com/api/update?zone={self._zone}&token={self._token}&ipv4={address}"
+        session.get(url)
+    
+    def update_ipv6(self, address):
+        print(f"Updating address to {address}")
+        url = f"https://dynv6.com/api/update?zone={self._zone}&token={self._token}&ipv6={address}"
+        session.get(url)
+
+
 def _load_config(arg_file):
     config_files = [arg_file, "~/.config/dnsupdate.conf", "/etc/dnsupdate.conf"]
     for config_file in config_files:
